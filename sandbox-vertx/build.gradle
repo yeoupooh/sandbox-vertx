@@ -1,0 +1,58 @@
+plugins {
+  id 'java'
+  id 'eclipse'
+  id 'application'
+  id 'com.github.johnrengelman.shadow' version '1.2.2'
+}
+
+println System.getProperty("java.home")
+
+ compileJava {
+  sourceCompatibility = '1.8'
+}
+//sourceCompatibility = 1.8
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                   'Implementation-Version': version
+    }
+}
+
+repositories {
+	jcenter()
+    mavenCentral()
+}
+
+mainClassName = 'org.gradle.MyHttpServer'
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'io.vertx', name: 'vertx-core', version: '3.2.1'
+    compile group: 'io.vertx', name: 'vertx-web', version: '3.2.1'
+    compile group: 'io.vertx', name: 'vertx-rx-java', version: '3.2.1'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+shadowJar {
+  classifier = 'fat'
+  mergeServiceFiles {
+    include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+  }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.10'
+}
